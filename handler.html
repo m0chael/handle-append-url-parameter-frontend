@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pass url parameters on fronted with localStorage and a.links</title>
+</head>
+<body>
+  <a href="#someurl" class="append-parameter">test</a>
+  <a href="#someurl" class="append-parameter">test</a>
+  <a href="#someurl" class="append-parameter">test</a>
+
+<script>
+  const urlParamPasser = {
+    thisSplitKey : "{PARAMETER_KEY_TO_CHECK}",
+    thisAppendKey : "?{PARAMETER_KEY_TO_APPEND}",
+    thisLinkClassToAppendTo : "a.append-parameter",
+    localStorageNameForAppending : "local-parameter-passing",
+
+    getUrlParameterSegment() {
+      let thisUrlSplit = (window.location.href).split(this.thisSplitKey);
+      return thisUrlSplit[thisUrlSplit.length-1];
+    },
+    handleAndAppendToHrefs() {
+      let thisLocalStorage = localStorage.getItem(localStorageNameForAppending);
+      let thisUrlSegment = "";
+
+      if (thisLocalStorage != null) {
+        thisUrlSegment = thisLocalStorage;
+      } else {
+        thisUrlSegment = getUrlParameterSegment();
+        localStorage.setItem(localStorageNameForAppending, thisUrlSegment);
+      }
+
+      let theseLinks = document.querySelectorAll(thisLinkClassToAppendTo);
+      for (let index = 0; index < theseLinks.length; index++) {
+        theseLinks[index].href += thisAppendKey + thisUrlSegment;
+      }
+    }
+  };
+
+  urlParamPasser.handleAndAppendToHrefs();
+</script>
+</body>
+</html>
